@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import {  useState } from 'react';
 import './index.css';
 
 const faqs = [
@@ -24,30 +24,59 @@ export default function App() {
   );
 }
 
-function Accordion({data}) {
-  return <div className='accordion'>
-    {
-      data.map((el,i) => <AccordionItem title={el.title} text={el.text} num={i} key={el.title}/>)
-    }
-  </div>;
+function Accordion({ data }) {
+  const [curOpen, setCurOpen] = useState(null);
+  return (
+    <div className="accordion">
+      {data.map((el, i) => (
+        <AccordionItem
+          curOpen={curOpen}
+          onOpen={setCurOpen}
+          title={el.title}
+          num={i}
+          key={el.title}
+        >
+          {el.text}
+        </AccordionItem>
+      ))}
+      <AccordionItem
+        curOpen={curOpen}
+        onOpen={setCurOpen}
+        title='test-1'
+        
+        num= {22}
+        key= 'Test..1'
+      >
+        <p>
+          Allows developers to:
+        </p>
+        <ul>
+          <li>Build apps for any device</li>
+          <li>Write once, run anywhere</li>
+          <li>Get to market in a snap</li>
+        </ul>
+      </AccordionItem>
+      
+    </div>
+  );
 }
 
-function AccordionItem({num, title, text}) {
-  const [isOpen, setIsOpen] = useState(false);
+function AccordionItem({ num, title, curOpen, onOpen, children }) {
+  // const [isOpen, setIsOpen] = useState(false);
+  const isOpen = num === curOpen;
 
   function handleToggle() {
-    setIsOpen(isOpen => !isOpen)
+    onOpen(isOpen ? null : num);
   }
 
   return (
     <div className={`item ${isOpen ? 'open' : ''}`} onClick={handleToggle}>
-      <p className='number'>{num < 9 ? `0${num + 1}` : num + 1}</p>
-      <p className='title'>{title}</p>
-      <p className='icon'>{isOpen ? '-' : '+'}</p>
-      <div className='content-box'>{
-        isOpen ? <p className='content'>{text}</p> : null
-
-      }</div>
+      <p className="number">{num < 9 ? `0${num + 1}` : num + 1}</p>
+      <p className="title">{title}</p>
+      <p className="icon">{isOpen ? '-' : '+'}</p>
+      <div className="content-box">
+        {isOpen ? <p className="content">{children}</p> : null}
+      </div>
     </div>
-  )
+  );
 }
